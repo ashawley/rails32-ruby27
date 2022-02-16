@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.5.9-node
         environment:
+          CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
           BUNDLE_FROZEN: "true"
           BUNDLE_JOBS: 3
           BUNDLE_RETRY: 3
@@ -24,10 +25,12 @@ jobs:
             - source-v1-{{ .Branch }}-
             - source-v1-
       - checkout
+      - run: sudo apt-get install libsqlite3-dev
       - save_cache:
           key: source-v1-{{ .Branch }}-{{ .Revision }}
           paths:
             - .git
+      - run: mkdir -p $CIRCLE_TEST_REPORTS
       - restore_cache:
           key: gem-dep-v1-{{ checksum "Gemfile.lock" }}
       - run: ruby -v

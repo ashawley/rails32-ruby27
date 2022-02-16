@@ -25,6 +25,7 @@ jobs:
             - source-v1-{{ .Branch }}-
             - source-v1-
       - checkout
+      - run: sudo apt-get update
       - run: sudo apt-get install libsqlite3-dev
       - save_cache:
           key: source-v1-{{ .Branch }}-{{ .Revision }}

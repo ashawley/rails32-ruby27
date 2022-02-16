@@ -1,0 +1,58 @@
+version: 2.1
+jobs:
+  rails:
+    docker:
+      - image: circleci/ruby:2.5.9-node
+        environment:
+          BUNDLE_FROZEN: "true"
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          RAILS_ENV: test
+          RACK_ENV: test
+      - image: postgres:11
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: circle_ruby_test
+    resource_class: small
+    working_directory: ~/project
+    steps:
+      - restore_cache:
+          keys:
+            - source-v1-{{ .Branch }}-{{ .Revision }}
+            - source-v1-{{ .Branch }}-
+            - source-v1-
+      - checkout
+      - save_cache:
+          key: source-v1-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - .git
+      - restore_cache:
+          key: gem-dep-v1-{{ checksum "Gemfile.lock" }}
+      - run: ruby -v
+      - run: gem install --no-document bundler -v 1.17.3
+      - run: gem list bundler
+      - run: bundle _1.17.3_ -v
+      - run: bundle _1.17.3_ check || bundle _1.17.3_ install
+      - save_cache:
+          key: gem-dep-v1-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+            - ~/.bundle
+      - run: |-
+          mkdir -p config && echo 'test:
+            adapter: postgresql
+            database: circle_ruby_test
+            username: ubuntu
+            host: localhost
+          ' > config/database.yml
+      - run: bundle _1.17.3_ exec rake db:create db:schema:load --trace
+      - run: bundle _1.17.3_ exec rake db:migrate db:seed
+      - run: bundle _1.17.3_ exec rspec --colour spec --format progress --format RspecJunitFormatter --out $CIRCLE_TEST_REPORTS/rspec/rspec.xml
+      - store_test_results:
+          path: /tmp/circleci-test-results
+workflows:
+  build:
+    jobs:
+      - rails

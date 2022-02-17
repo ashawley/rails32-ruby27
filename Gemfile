@@ -5,6 +5,10 @@ gem 'rails', '~> 3.2.22'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+# Heroku rails console complains:
+# (cannot load such file -- test/unit/testcase) (LoadError)
+gem 'test-unit', '~> 3.4'
+
 gem 'sqlite3', '~> 1.3.13'
 
 # Database

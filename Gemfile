@@ -10,6 +10,8 @@ gem 'sqlite3', '~> 1.3.13'
 # Database
 gem 'pg', '~> 1.1.4'
 
+gem 'rake', '~> 11.3.0' # Pinned to 11.x for Rails 3
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

@@ -33,6 +33,13 @@ gem 'jquery-rails', '< 4'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
+group :test do
+  # Rspec testing gems
+  gem 'rspec-rails', '~> 2.99.0'
+  gem 'rspec_junit_formatter'
+  gem 'factory_girl_rails', '~> 4.4.0'
+end
+
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
 

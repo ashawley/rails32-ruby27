@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   rails:
     docker:
-      - image: circleci/ruby:2.5.9-node
+      - image: circleci/ruby:2.7.4-node
         environment:
           CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
           BUNDLE_FROZEN: "true"
